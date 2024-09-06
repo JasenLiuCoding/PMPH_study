@@ -1,15 +1,6 @@
 --------------------------------------------------------
 --- Attempting the sequential implementation of lssp ---
 --------------------------------------------------------
--- Parallel Longest Satisfying Segment
---
--- ==
--- compiled input {
---    [1i32, -2i32, -2i32, 0i32, 0i32, 0i32, 0i32, 0i32, 3i32, 4i32, -6i32, 1i32]
--- }
--- output {
---    5i32
--- }
 
 type int = i32
 let max (x:int, y:int) = i32.max x y

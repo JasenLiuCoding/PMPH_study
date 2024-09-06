@@ -30,7 +30,7 @@ let lss_redOp (pred2: i32 -> i32 -> bool)
                   else x_lis
                 else x_lis
   let new_lcs = if segments_connect then
-                  if y_lcs = y_len then x_lcs + y_lcs
+                  if y_lcs == y_len then x_lcs + y_lcs
                   else y_lcs
                 else y_lcs
   let new_len = x_len + y_len

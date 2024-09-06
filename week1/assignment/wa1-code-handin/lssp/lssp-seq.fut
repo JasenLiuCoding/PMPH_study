@@ -29,3 +29,5 @@ let lssp_seq [n]
         let best_len = max(best_len, curr_len)
         in  (best_len, curr_len, x)
   in best_len
+
+let main(xs: []i32): i32 = lssp_seq xs

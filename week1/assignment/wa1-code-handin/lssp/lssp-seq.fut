@@ -1,15 +1,7 @@
 --------------------------------------------------------
 --- Attempting the sequential implementation of lssp ---
 --------------------------------------------------------
--- Parallel Longest Satisfying Segment
---
--- ==
--- no_cuda no_opencl input {
---    [1i32, -2, -2, 0, 0, 0, 0, 0, 3, 4, -6, 1]
--- }
--- output {
---    5
--- }
+
 type int = i32
 let max (x:int, y:int) = i32.max x y
 
@@ -29,5 +21,3 @@ let lssp_seq [n]
         let best_len = max(best_len, curr_len)
         in  (best_len, curr_len, x)
   in best_len
-
-let main(xs: []i32): i32 = lssp_seq xs

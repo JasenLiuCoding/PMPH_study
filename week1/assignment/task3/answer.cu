@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     //   }
     }
     // setting block size in dimension x
-    unsigned int B = 256; 
+    unsigned int B = 1024; 
     // number of blocks in dimension x (don't know why minus 1 here )
     // unsigned int numblocks = (N+B-1 )/B 
     unsigned int numblocks = (N+B-1)/B;

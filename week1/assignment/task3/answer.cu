@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
 
     // a small number of dry runs
     for(int r = 0; r < 1; r++) {
-        mul2Kernel<<< grid, block>>>(d_in, d_out);
+        mul2Kernel<<< grid, block>>>(d_in, d_out, N);
     }
   
     { // execute the kernel a number of times;
@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
         gettimeofday(&t_start, NULL);
 
         for(int r = 0; r < GPU_RUNS; r++) {
-            mul2Kernel<<< grid, block>>>(d_in, d_out);
+            mul2Kernel<<< grid, block>>>(d_in, d_out, N);
         }
         cudaDeviceSynchronize();
         // ^ `cudaDeviceSynchronize` is needed for runtime

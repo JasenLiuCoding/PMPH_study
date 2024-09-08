@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
 
     for(unsigned int i=0; i<N; ++i) {
         float actual   = h_out[i];
-        float expected = (h_in[i]/(h_in[i]-2.3))^3; 
+        float expected = pow(h_in[i]/(h_in[i]-2.3), 3); 
         if( actual != expected ) {
             printf("Invalid result at index %d, actual: %f, expected: %f. \n", i, actual, expected);
             exit(3);

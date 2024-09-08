@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
     unsigned int B = 256; 
     // number of blocks in dimension x (don't know why minus 1 here )
     // unsigned int numblocks = (N+B-1 )/B 
-    unsigned int numblocks = (N+B)/B;
+    unsigned int numblocks = (N+B-1)/B;
     dim3 block(B,1,1), grid(numblocks, 1, 1);
     // use the first CUDA device:
     cudaSetDevice(0);

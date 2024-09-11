@@ -1,6 +1,6 @@
 -- Parallel Longest Satisfying Segment
 --
--- Dataset 1: given
+-- Dataset 1
 -- ==
 -- compiled input {
 --    [1i32, -2i32, -2i32, 0i32, 0i32, 0i32, 0i32, 0i32, 3i32, 4i32, -6i32, 1i32]
@@ -8,7 +8,7 @@
 -- output {
 --    5i32
 -- }
--- Dataset 2: 1 to 10
+-- Dataset 2
 -- ==
 -- compiled input {
 --    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -16,7 +16,7 @@
 -- output {
 --    1
 -- }
--- Dataset 3: 1 to 10; 7 repeat
+-- Dataset 3
 -- ==
 -- compiled input {
 --    [1, 2, 3, 4, 5, 6, 7, 7, 8, 9, 10]

@@ -7,6 +7,14 @@
 -- output {
 --    5i32
 -- }
+-- Dataset2
+-- ==
+-- compiled input {
+--  [1,2,3,4,5,6,7,8,9,10]
+-- }
+-- output {
+--  1
+-- }
 
 import "lssp"
 import "lssp-seq"

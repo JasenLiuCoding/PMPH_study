@@ -19,6 +19,19 @@ let mkFlagArray 't [m] (aoa_shp: [m]i64) (zero: t) (aoa_val: [m]t) : []t =
   in scatter (replicate aoa_len zero)
              shp_ind aoa_val
 
+let segmented_scan_inc [n] 't
+              (op: t -> t -> t) (ne: t)
+              (flags: [n]bool)
+              (arr: [n]t)   :[n]t = 
+  let (_, res) = unzip <|
+    scan (\(x_flag, x) (y_flag, y) -> 
+      let fl = x_flag || y_flag
+      let vl = if y_flag then y 
+                         else op x y
+      in (fl, vl)
+    ) (false, ne) (zip flags arr)
+  in res
+
 let primesFlat (n : i64) : []i64 =
   let sq_primes   = [2i64, 3i64, 5i64, 7i64]
   let len  = 8i64
@@ -54,12 +67,14 @@ let primesFlat (n : i64) : []i64 =
         let len = length mult_lens
         let flag = mkFlagArray mult_lens 0 mult_lens
         let vals = map (\f -> if f!=0 then 0 else 1) flag
-        in sgmScan (+) 0 flag vals
+        in sgmScan_inc (+) 0 flag vals
+
+
       let twom = map (\p -> p+1) iot
       -- let rp = replicate mm1 p 
       let rp = 
         let (flag_n,flag_v) = zip mm1 p |> mkFlagArray mm1 (0,0) |>unzip
-        in sgmScan (+) 0 flag_n flag_v
+        in sgmScan_inc (+) 0 flag_n flag_v
 
       let composite = map (*) twom rp
 

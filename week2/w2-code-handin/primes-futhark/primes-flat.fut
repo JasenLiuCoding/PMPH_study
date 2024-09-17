@@ -19,7 +19,7 @@ let mkFlagArray 't [m] (aoa_shp: [m]i64) (zero: t) (aoa_val: [m]t) : []t =
   in scatter (replicate aoa_len zero)
              shp_ind aoa_val
 
-let segmented_scan_inc [n] 't
+let sgmScan_inc [n] 't
               (op: t -> t -> t) (ne: t)
               (flags: [n]bool)
               (arr: [n]t)   :[n]t = 

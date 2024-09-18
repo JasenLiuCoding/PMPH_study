@@ -4,7 +4,7 @@
 let scan_exc [n] 't (op: t -> t -> t) (ne: t) (arr: [n]t) :[]t = 
   let s_inc = scan (op) ne arr
   let dp = init s_inc
-  let res = [ne] ++ dp
+  let res = (([ne] ++ dp) :> [n]t)
   in res 
 ------------------------
 --- Sgm Scan Helpers ---

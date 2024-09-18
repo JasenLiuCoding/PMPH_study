@@ -44,10 +44,9 @@ let primesFlat (n : i64) : []i64 =
           -- let flag = mkFlagArray mult_lens 0 mult_lens
           -- let vals = map (\f -> if f!=0 then 0 else 1) flag
           -- in sgmScan_inc (+) 0 (flag :> [len]i64) (vals :> [len]i64)
-          let len = length mult_lens
-          let flag = mkFlagArray mult_lens 0 (replicate len 1)
-          let vals = map (\f -> if f==1 then 0 else 1) flag
-          in sgmScan_inc (+) 0 flag vals
+          let flag = mkFlagArray mult_lens 0 mult_lens
+          let vals = map (\f -> if f!=0 then 0 else 1) flag
+          in sgmScan_inc (+) 0 (flag) (vals)
 
 
         -- let twom = map(\p -> map(+2) iot) sqrt_primes

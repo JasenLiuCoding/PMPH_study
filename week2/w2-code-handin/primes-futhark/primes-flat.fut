@@ -38,26 +38,23 @@ let primesFlat (n : i64) : []i64 =
       -- Also note that `not_primes` has flat length equal to `flat_size`
       --  and the shape of `composite` is `mult_lens`. 
       let composite = 
-        -- let iot = iota mult_lens
-        let iots = 
-          -- let len = length mult_lens
-          -- let flag = mkFlagArray mult_lens 0 mult_lens
-          -- let vals = map (\f -> if f!=0 then 0 else 1) flag
-          -- in sgmScan_inc (+) 0 (flag :> [len]i64) (vals :> [len]i64)
+        let iot = 
           let flag = mkFlagArray mult_lens 0 mult_lens
+          let flag_b = map (\f -> if f!=0 then true else false) flag
           let vals = map (\f -> if f!=0 then 0 else 1) flag
-          in sgmScan_inc (+) 0 flag vals
-
-
-        -- let twom = map(\p -> map(+2) iot) sqrt_primes
-        let twoms = map (\i -> i+2) iots 
-
-        -- let rp = map (\p -> replicate mult_lens p)
-        let rps = 
-          let (flag_n, flag_v) = zip mult_lens sq_primes |> mkFlagArray mult_lens (0,0) |> unzip
-          in sgmScan_inc (+) 0 flag_n flag_v
+          in sgmScan (+) 0 flag_b vals
+        let twom = map (\i -> i+2) iot
+        let rp = 
+          let inds = scan_exc (+) 0 mult_lens
+          let size = (last inds) + (last mult_lens)
+          let vals = scatter (replicate size 0) inds sq_primes
+          let flag = mkFlagArray mult_lens 0 mult_lens
+          let flag_b = map (\f -> if f!=0 then true else false) flag
+          in sgmScan (+) 0 flag_b vals
+        in map (\(j,p) -> j*p) (zip twom rp)
         
-        in map (\(j,p) -> j*p) (zip twoms rps)
+      
+
 
       
       

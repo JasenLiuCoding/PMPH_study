@@ -14,7 +14,7 @@ let scan_exc [n] 't (op: t -> t -> t) (ne: t) (arr: [n]t) :[]t =
 let sgmScan_inc [n] 't
             (op: t -> t -> t)
             (ne: t)
-            (flags: [n]bool)
+            (flags: [n])
             (vals: [n]t)
             : [n]t =
   scan (\(f1, v1) (f2, v2) -> (f1 || f2, if f2 then v2 else op v1 v2))
@@ -25,7 +25,7 @@ let sgmScan_inc [n] 't
 let sgmScan_exc [n] 't
             (op: t -> t -> t)
             (ne: t)
-            (flags: [n]bool)
+            (flags: [n])
             (vals: [n]t)
             : []t =
   scan_exc (\(f1, v1) (f2, v2) -> (f1 || f2, if f2 then v2 else op v1 v2))

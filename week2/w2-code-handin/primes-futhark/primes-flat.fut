@@ -4,33 +4,7 @@
 -- compiled input { 10000000i64 }
 
 -- output @ ref10000000.out
-
-let mkFlagArray 't [m] (aoa_shp: [m]i64) (zero: t) (aoa_val: [m]t) : []t = 
-  let shp_rot = map (\i -> if i==0 then 0
-                           else aoa_shp[i-1]
-                           ) (iota m)
-  let shp_scn = scan (+) 0 shp_rot
-  let aoa_len = if m == 0 then 0 
-                else shp_scn[m-1] + aoa_shp[m-1]
-  let shp_ind = map2 (\shp ind ->
-                        if shp==0 then -1
-                        else ind
-                        ) aoa_shp shp_scn
-  in scatter (replicate aoa_len zero)
-             shp_ind aoa_val
-
-let sgmScan_inc [n] 't
-              (op: t -> t -> t) (ne: t)
-              (flags: [n]bool)
-              (arr: [n]t)   :[n]t = 
-  let (_, res) = unzip <|
-    scan (\(x_flag, x) (y_flag, y) -> 
-      let fl = x_flag || y_flag
-      let vl = if y_flag then y 
-                         else op x y
-      in (fl, vl)
-    ) (false, ne) (zip flags arr)
-  in res
+import "helperfunc"
 
 let primesFlat (n : i64) : []i64 =
   let sq_primes   = [2i64, 3i64, 5i64, 7i64]
@@ -63,22 +37,40 @@ let primesFlat (n : i64) : []i64 =
       --  where `p \in sq_primes`.
       -- Also note that `not_primes` has flat length equal to `flat_size`
       --  and the shape of `composite` is `mult_lens`. 
-      let iot = 
-        let len = length mult_lens
-        let flag = mkFlagArray mult_lens 0 mult_lens
-        let vals = map (\f -> if f!=0 then 0 else 1) flag
-        in sgmScan_inc (+) 0 flag vals
+      let composite = 
+        -- let iot = iota mult_lens
+        let iots = 
+          -- let len = length mult_lens
+          -- let flag = mkFlagArray mult_lens 0 mult_lens
+          -- let vals = map (\f -> if f!=0 then 0 else 1) flag
+          -- in sgmScan_inc (+) 0 (flag :> [len]i64) (vals :> [len]i64)
+          let len = length mult_lens
+          let flag = mkFlagArray mult_lens 0 (replicate len 1)
+          let vals = map (\f -> if f==1 then 0 else 1) flag
+          in sgmScan_inc (+) 0 flag vals
 
 
-      let twom = map (\p -> p+1) iot
-      -- let rp = replicate mm1 p 
-      let rp = 
-        let (flag_n,flag_v) = zip mm1 p |> mkFlagArray mm1 (0,0) |>unzip
-        in sgmScan_inc (+) 0 flag_n flag_v
+        -- let twom = map(\p -> map(+2) iot) sqrt_primes
+        let twoms = map (\i -> i+2) iots 
 
-      let composite = map (*) twom rp
+        -- let rp = map (\p -> replicate mult_lens p)
+        let rps = 
+          let (flag_n, flag_v) = zip mult_lens sq_primes |> mkFlagArray mult_lens (0,0) |> unzip
+          in sgmScan_inc (+) 0 flag_n flag_v
+        
+        in map (\(j,p) -> j*p) (zip twoms rps)
 
-      let not_primes = replicate flat_size 0
+      
+      
+
+      
+
+      
+      
+
+
+      -- let not_primes = replicate flat_size 0
+      let not_primes = reduce (++) [] composite
 
       -- If not_primes is correctly computed, then the remaining
       -- code is correct and will do the job of computing the prime

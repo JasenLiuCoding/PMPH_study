@@ -44,6 +44,7 @@ let primesFlat (n : i64) : []i64 =
           let vals = map (\f -> if f!=0 then 0 else 1) flag
           in sgmScan (+) 0 flag_b vals
         let twom = map (\i -> i+2) iot
+
         let rp = 
           -- let (flag_n, flag_v) = zip mult_lens
           let inds = scan_exc (+) 0 mult_lens
@@ -67,8 +68,8 @@ let primesFlat (n : i64) : []i64 =
       
 
 
-      -- let not_primes = replicate flat_size 0
-      let not_primes = reduce (++) [] composite
+      let not_primes = replicate flat_size 0
+      -- let not_primes = reduce (++) [] composite
 
       -- If not_primes is correctly computed, then the remaining
       -- code is correct and will do the job of computing the prime

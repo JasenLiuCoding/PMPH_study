@@ -1,11 +1,11 @@
 ------------------------
 --- exclusive scan ---
 ------------------------
-let scan_exc [n] 't (op: t -> t -> t) (ne: t) (arr: [n]t) :[]t = 
+let scan_exc [n] 't (op: t -> t -> t) (ne: t) (arr: [n]t) :[n]t = 
   let s_inc = scan (op) ne arr
   let dp = init s_inc
-  let res = ([ne] ++ dp)
-  in res 
+  let res = [ne] ++ dp
+  in res :> [n]t
 ------------------------
 --- Sgm Scan Helpers ---
 ------------------------
@@ -33,17 +33,17 @@ let sgmScan_inc [n] 't
        (zip flags vals)
   |> unzip
   |> (.1)
-let sgmScan_exc [n] 't
-            (op: t -> t -> t)
-            (ne: t)
-            (flags: [n]bool)
-            (vals: [n]t)
-            : []t =
-  scan_exc (\(f1, v1) (f2, v2) -> (f1 || f2, if f2 then v2 else op v1 v2))
-       (false, ne)
-       (zip flags vals)
-  |> unzip
-  |> (.1)
+-- let sgmScan_exc [n] 't
+--             (op: t -> t -> t)
+--             (ne: t)
+--             (flags: [n]bool)
+--             (vals: [n]t)
+--             : []t =
+--   scan_exc (\(f1, v1) (f2, v2) -> (f1 || f2, if f2 then v2 else op v1 v2))
+--        (false, ne)
+--        (zip flags vals)
+--   |> unzip
+--   |> (.1)
 
 ------------------------
 --- flag maker ---

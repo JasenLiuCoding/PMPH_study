@@ -45,13 +45,14 @@ let primesFlat (n : i64) : []i64 =
           in sgmScan (+) 0 flag_b vals
         let twom = map (\i -> i+2) iot
         let rp = 
-          let inds = scan_exc (+) 0 mult_lens
-          let size = (last inds) + (last mult_lens)
-          let vals = scatter (replicate size 0) inds sq_primes
-          let flag = mkFlagArray mult_lens 0 mult_lens
+          let inds = scan_exc (+) 0 iot 
+          let size = (last inds) + (last iot)
+          let flag = scatter (replicate size 0) inds iot
           let flag_b = map (\f -> if f!=0 then true else false) flag
-          in sgmScan (+) 0 flag_b vals
+          let vals = scatter (replicate size 0) inds sq_primes
+          in sgmScan (+) 0 flag_b vals 
         in map (\(j,p) -> j*p) (zip twom rp)
+
         
       
 

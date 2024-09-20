@@ -182,11 +182,11 @@ scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
     const unsigned int lane = idx & (WARP-1);
 
     if(lane==0) {
+        int k = log(WARP);
         #pragma unroll
-        k = log(WARP);
         for(int i=1; i<k; i++) {
-            h = pow(2, i);
-            forall(int j=h; j<=WARP; j++){
+            int h = pow(2, i);
+            for(int j=h; j<=WARP; j++){
                 ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
             }
         }
@@ -474,7 +474,7 @@ copyFromShr2GlbMem( const uint32_t glb_offs
     #pragma unroll
     for (uint32_t i = 0; i < CHUNK; i++) {
         // uint32_t loc_ind = threadIdx.x * CHUNK + i;
-        uint32_t loc_ind = threadIdx.x + (CHUNK)*i
+        uint32_t loc_ind = threadIdx.x + (CHUNK)*i;
         uint32_t glb_ind = glb_offs + loc_ind;
         if (glb_ind < N) {
             T elm = const_cast<const T&>(shmem_red[loc_ind]);

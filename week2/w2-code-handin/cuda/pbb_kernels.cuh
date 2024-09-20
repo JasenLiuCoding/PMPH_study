@@ -196,7 +196,7 @@ class Mssp {
 template<class OP>
 __device__ inline typename OP::RedElTp
 scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
-    const unsigned int lane = idx & (WARP-1);x
+    const unsigned int lane = idx & (WARP-1);
     const unsigned int k = __log2f(WARP);
     if(lane==0) {
 

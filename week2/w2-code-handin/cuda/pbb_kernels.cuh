@@ -176,40 +176,40 @@ class Mssp {
  *     all threads will reach the barrier, resulting in incorrect
  *     results.)
  */
-// template<class OP>
-// __device__ inline typename OP::RedElTp
-// scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
-//     const unsigned int lane = idx & (WARP-1);
-//     const unsigned int k = __log2f(WARP);
-//     if(lane==0) {
-//         #pragma unroll
-//         for(int i=0; i<k; i++) {
-//             int h = __powf(2, i);
-//             // #pragma unroll
-//             for(int j=1; j<WARP; j++){
-//                 if (j>=h){
-//                     ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
-//                 }
-//                 // ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
-//             }
-//         }
-//     }
-    
-//     return OP::remVolatile(ptr[idx]);
-// }
 template<class OP>
 __device__ inline typename OP::RedElTp
 scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
     const unsigned int lane = idx & (WARP-1);
-
+    const unsigned int k = __log2f(WARP);
     if(lane==0) {
         #pragma unroll
-        for(int i=1; i<WARP; i++) {
-            ptr[idx+i] = OP::apply(ptr[idx+i-1], ptr[idx+i]);
+        for(int i=0; i<k; i++) {
+            int h = __powf(2, i);
+            // #pragma unroll
+            for(int j=1; j<WARP; j++){
+                if (j>=h){
+                    ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
+                }
+                // ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
+            }
         }
     }
+    
     return OP::remVolatile(ptr[idx]);
 }
+// template<class OP>
+// __device__ inline typename OP::RedElTp
+// scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
+//     const unsigned int lane = idx & (WARP-1);
+
+//     if(lane==0) {
+//         #pragma unroll
+//         for(int i=1; i<WARP; i++) {
+//             ptr[idx+i] = OP::apply(ptr[idx+i-1], ptr[idx+i]);
+//         }
+//     }
+//     return OP::remVolatile(ptr[idx]);
+// }
 
 
 /**

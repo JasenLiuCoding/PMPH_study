@@ -176,26 +176,6 @@ class Mssp {
  *     all threads will reach the barrier, resulting in incorrect
  *     results.)
  */
-// template<class OP>
-// __device__ inline typename OP::RedElTp
-// scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
-//     const unsigned int lane = idx & (WARP-1);
-//     const unsigned int k = __log2f(WARP);
-//     if(lane==0) {
-//         #pragma unroll
-//         for(int i=0; i<k; i++) {
-//             int h = __powf(2, i);
-//             for(int j=0; j<WARP; j++){
-//                 if (j>=h){
-//                     ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
-//                 }
-//                 // ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
-//             }
-//         }
-//     }
-    
-//     return OP::remVolatile(ptr[idx]);
-// }
 template<class OP>
 __device__ inline typename OP::RedElTp
 scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
@@ -209,7 +189,6 @@ scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
     }
     return OP::remVolatile(ptr[idx]);
 }
-
 
 /**
  * A CUDA-block of threads cooperatively scan with generic-binop `OP`
@@ -457,8 +436,7 @@ copyFromGlb2ShrMem( const uint32_t glb_offs
 ) {
     #pragma unroll
     for(uint32_t i=0; i<CHUNK; i++) {
-        // uint32_t loc_ind = threadIdx.x*CHUNK + i;
-        uint32_t loc_ind = threadIdx.x + (CHUNK)*i;
+        uint32_t loc_ind = threadIdx.x*CHUNK + i;
         uint32_t glb_ind = glb_offs + loc_ind;
         T elm = ne;
         if(glb_ind < N) { elm = d_inp[glb_ind]; }
@@ -488,8 +466,7 @@ copyFromShr2GlbMem( const uint32_t glb_offs
 ) {
     #pragma unroll
     for (uint32_t i = 0; i < CHUNK; i++) {
-        // uint32_t loc_ind = threadIdx.x * CHUNK + i;
-        uint32_t loc_ind = threadIdx.x + (CHUNK)*i;
+        uint32_t loc_ind = threadIdx.x * CHUNK + i;
         uint32_t glb_ind = glb_offs + loc_ind;
         if (glb_ind < N) {
             T elm = const_cast<const T&>(shmem_red[loc_ind]);

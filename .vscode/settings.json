@@ -1,6 +1,7 @@
 {
     "files.associations": {
         ".fantomasignore": "ignore",
-        "complex": "cpp"
+        "complex": "cpp",
+        "locale": "cpp"
     }
 }

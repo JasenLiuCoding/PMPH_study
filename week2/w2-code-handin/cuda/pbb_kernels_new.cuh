@@ -183,13 +183,19 @@ scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
 
     if(lane==0) {
         #pragma unroll
-        for(int i=1; i<WARP; i++) {
-            ptr[idx+i] = OP::apply(ptr[idx+i-1], ptr[idx+i]);
+        k = log(WARP)
+        for(int i=1; i<k; i++) {
+            h = pow(2, i)
+            forall(int j=h; j<=WARP; j++){
+                ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
+            }
         }
     }
     
     return OP::remVolatile(ptr[idx]);
 }
+
+
 /**
  * A CUDA-block of threads cooperatively scan with generic-binop `OP`
  *   a CUDA-block number of elements stored in shared memory (`ptr`).
@@ -436,7 +442,8 @@ copyFromGlb2ShrMem( const uint32_t glb_offs
 ) {
     #pragma unroll
     for(uint32_t i=0; i<CHUNK; i++) {
-        uint32_t loc_ind = threadIdx.x*CHUNK + i;
+        // uint32_t loc_ind = threadIdx.x*CHUNK + i;
+        uint32_t loc_ind = threadIdx.x + (CHUNK)*i
         uint32_t glb_ind = glb_offs + loc_ind;
         T elm = ne;
         if(glb_ind < N) { elm = d_inp[glb_ind]; }
@@ -466,7 +473,8 @@ copyFromShr2GlbMem( const uint32_t glb_offs
 ) {
     #pragma unroll
     for (uint32_t i = 0; i < CHUNK; i++) {
-        uint32_t loc_ind = threadIdx.x * CHUNK + i;
+        // uint32_t loc_ind = threadIdx.x * CHUNK + i;
+        uint32_t loc_ind = threadIdx.x + (CHUNK)*i
         uint32_t glb_ind = glb_offs + loc_ind;
         if (glb_ind < N) {
             T elm = const_cast<const T&>(shmem_red[loc_ind]);

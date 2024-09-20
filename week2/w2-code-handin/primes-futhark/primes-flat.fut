@@ -37,24 +37,36 @@ let primesFlat (n : i64) : []i64 =
       --  where `p \in sq_primes`.
       -- Also note that `not_primes` has flat length equal to `flat_size`
       --  and the shape of `composite` is `mult_lens`. 
-      let composite = 
-        let iot = 
-          let flag = mkFlagArray mult_lens 0 mult_lens
-          let flag_b = map (\f -> if f!=0 then true else false) flag
-          let vals = map (\f -> if f!=0 then 0 else 1) flag
-          in sgmScan (+) 0 flag_b vals
-        let twom = map (\i -> i+2) iot
+      
+        -- let iot = 
+        --   let flag = mkFlagArray mult_lens 0 mult_lens
+        --   -- let flag_b = map (\f -> if f!=0 then true else false) flag
+        --   let vals = map (\f -> if f!=0 then 0 else 1) flag
+        --   in sgmScan (+) 0 flag vals
+        -- let twom = map (\i -> i+2) iot
+      let (flag, flag') =                      -- flag  = [1,2,0,3,0,0,4,0,0,0]
+            zip sq_primes mult_lens                       -- flag' = [2,3,0,4,0,0,5,0,0,0]
+          |> mkFlagArray sq_primes (0,0)
+          |> unzip
+        let tmp1 = map  (\ f -> if f != 0        -- [0,0,1,0,1,1,0,1,1,1]
+                        then 0i64
+                        else 1
+                ) flag 
+      let iots = sgmScan (+) 0 flag tmp1
+      let twom = map (\i -> i+2) iots
+      let ip1rs = sgmScan (+) 0 flag flag'
+      let composite = map (\(j,p) -> j*p) (zip ip1rs twom)
+      
 
-        let rp = 
-          -- let (flag_n, flag_v) = zip mult_lens
-          let inds = scan_exc (+) 0 mult_lens
-          let size = (last inds) + (last mult_lens)
-          let flag = scatter (replicate size 0) inds mult_lens
-          let flag_b = map (\f -> if f!=0 then true else false) flag
-          let vals = scatter (replicate size 0) inds sq_primes
-          in sgmScan (+) 0 flag_b vals 
-        in map (\(j,p) -> j*p) (zip (twom:>[flat_size]i64) (rp :>[flat_size]i64))
-
+        -- let rp = 
+        --   -- let (flag_n, flag_v) = zip mult_lens
+        --   let inds = scan_exc (+) 0 mult_lens
+        --   let size = (last inds) + (last mult_lens)
+        --   let flag = scatter (replicate size 0) inds mult_lens
+        --   let vals = scatter (replicate size 0) inds sq_primes
+        --   in sgmScan (+) 0 flag vals 
+        -- in map (\(j,p) -> j*p) (zip (twom:>[flat_size]i64) (rp :>[flat_size]i64))
+      
         
       
 
@@ -68,9 +80,8 @@ let primesFlat (n : i64) : []i64 =
       
 
 
-      let not_primes = replicate flat_size 0
-      -- let not_primes = reduce (++) [] composite
-
+      -- let not_primes = replicate flat_size 0
+      let not_primes = reduce (++) [] composite
       -- If not_primes is correctly computed, then the remaining
       -- code is correct and will do the job of computing the prime
       -- numbers up to n!

@@ -186,7 +186,7 @@ scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
         #pragma unroll
         for(int i=0; i<k; i++) {
             int h = __powf(2, i);
-            // #pragma unroll
+            #pragma unroll
             for(int j=1; j<WARP; j++){
                 if (j>=h){
                     ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
@@ -252,7 +252,7 @@ scanIncBlock(volatile typename OP::RedElTp* ptr, const unsigned int idx) {
     if (warpid > 0) {
         res = OP::apply(ptr[warpid-1], res);
     }
-    __syncthreads();
+    // __syncthreads();
     return res;
 }
 

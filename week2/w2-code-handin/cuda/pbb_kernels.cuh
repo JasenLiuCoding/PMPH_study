@@ -190,6 +190,7 @@ scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
             // #pragma unroll
             for(int j=1; j<WARP; j++){
                 if (j>=h){
+                    printf("j = %d \n", j);
                     ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
                 }
                 // ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);

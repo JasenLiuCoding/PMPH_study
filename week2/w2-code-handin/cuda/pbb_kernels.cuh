@@ -467,7 +467,7 @@ copyFromGlb2ShrMem( const uint32_t glb_offs
                   , volatile T* shmem_inp
 ) {
     #pragma unroll
-    for(uint32_t i=0; i<CHUNK; i++) {
+    for(uint32_t i=0; i<blockDim.x; i++) {
         // uint32_t loc_ind = threadIdx.x*CHUNK + i;
         uint32_t loc_ind = threadIdx.x + i * CHUNK;
         uint32_t glb_ind = glb_offs + loc_ind;

@@ -183,7 +183,7 @@ scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
     const unsigned int k = __log2f(WARP);
 
     if(lane==0) {
-        // #pragma unroll
+        #pragma unroll
         for(int i=0; i<k; i++) {
             int h = __powf(2, i);
             #pragma unroll

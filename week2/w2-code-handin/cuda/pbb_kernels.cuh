@@ -177,26 +177,35 @@ class Mssp {
  *     results.)
  */
 template<class OP>
-__device__ inline typename OP::RedElTp
-scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
-    const unsigned int lane = idx & (WARP-1);
+    __device__ inline typename OP::RedElTp
+    scanIncWarp(volatile typename OP::RedElTp* ptr, const unsigned int idx) {
+        const unsigned int lane = idx & (WARP-1);
 
-    if(lane==0) {
-        int k = __log2f(WARP);
+        // Anders: use the pre-defined lgWARP instead of __log2f(WARP),
+        // since __log2f might not be computed at compile-time.
+        int k = lgWARP;
         #pragma unroll
-        for(int i=0; i<k; i++) {
-            int h = __powf(2, i);
-            #pragma unroll
-            for(int j=1; j<WARP; j++){
-                if (j>=h){
-                    ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
-                }
+        for (int i = 0; i < k; i++) {
+            // Anders: use bit-shifting here instead of powf(2, i) since it is much
+            // cheaper.
+            int h = 1 << i;
+
+            // Anders: in your original code, you had a for loop of `j = 0..31`.
+            // however, we now have 32 warp lanes performing the work, so the
+            // loop is not necessary.
+            //
+            // TODO: instead, what should the value of `j` be now that we have 32
+            // lanes doing the work?
+            int j = lane; // TODO: replace this one.
+            if (j >= h) {
+                // Anders: in the original line, you added +j to idx, but this
+                // is not necessary since each thread already has its correct
+                // offset in the value of `idx`
                 // ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
+                ptr[idx] = OP::apply(ptr[idx-h], ptr[idx]);
             }
         }
-    }
-    
-    return OP::remVolatile(ptr[idx]);
+        return OP::remVolatile(ptr[idx]);
 }
 // template<class OP>
 // __device__ inline typename OP::RedElTp

@@ -180,14 +180,15 @@ template<class OP>
 __device__ inline typename OP::RedElTp
 scanIncWarp( volatile typename OP::RedElTp* ptr, const unsigned int idx ) {
     const unsigned int lane = idx & (WARP-1);
-    const unsigned int k = __log2f(WARP);
+    const unsigned int k = __log2(WARP);
 
     if(lane==0) {
         #pragma unroll
         for(int i=0; i<k; i++) {
-            int h = __powf(2, i);
+            int h = __pow(2, i);
+            printf("h = %d \n", h);
             // #pragma unroll
-            for(int j=0; j<WARP; j++){
+            for(int j=1; j<WARP; j++){
                 if (j>=h){
                     ptr[idx+j] = OP::apply(ptr[idx+j-h], ptr[idx+j]);
                 }

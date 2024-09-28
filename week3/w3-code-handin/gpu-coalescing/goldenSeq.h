@@ -26,7 +26,7 @@ void goldenSeq(ElTp* A, ElTp* B, const uint32_t num_rows, const uint32_t num_col
             
         // }
         for(uint64_t j = 0; j < num_cols; j++) {
-            jj = ii+j
+            uint64_t jj = ii+j;
             a_el  = A[jj];
             accum = sqrt(accum) + a_el*a_el;
             B[jj] = accum;

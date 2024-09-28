@@ -96,13 +96,13 @@ template<class ElTp>
 __global__ void 
 transKernel(ElTp* A_tr, ElTp* B_tr, uint32_t num_rows, uint32_t num_cols) {
     uint32_t gid = blockIdx.x * blockDim.x + threadIdx.x;
-    if(gid >= num_cols) return;
+    if(gid >= num_rows) return;
 
     ElTp accum = 0;
-    for(int j=0; j<num_rows; j++) {
-        ElTp el_a  = A_tr[ gid*num_rows + j ];
+    for(int j=0; j<num_cols; j++) {
+        ElTp el_a  = A_tr[ gid*num_cols + j ];
         accum = sqrt(accum) + el_a * el_a;
-        B_tr[ gid*num_rows + j ] = accum;
+        B_tr[ gid*num_cols + j ] = accum;
     }
 }
 
